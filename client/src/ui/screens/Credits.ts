@@ -33,7 +33,7 @@ export function renderCredits(root: HTMLElement, onBack: () => void): void {
 
           <div class="credits-badge-card">
             <p class="credits-signature">Designed and Developed by <span class="credits-author">ADITYA AVHAD</span></p>
-            <p class="credits-copyright">&copy; 2026 ADITYA AVHAD</p>
+            <p class="credits-copyright">&copy; 2026</p>
             <p class="credits-tagline">Aim. Break. Outsmart. Win.</p>
           </div>
         </div>

@@ -276,8 +276,8 @@ A modern 8-ball pool experience combining realistic physics, intelligent AI oppo
 - **Tech Stack:** TypeScript · HTML5 Canvas · Node.js · Express · Socket.IO
 - **Ruleset:** WPA (World Pool-Billiard Association) 8-Ball ruleset
 - **Tagline:** Aim. Break. Outsmart. Win.
-- **Copyright:** © 2026 ADITYA AVHAD
+- **Copyright:** © 2026
 
 ## License
 
-[MIT](./LICENSE) © 2026 ADITYA AVHAD
+[MIT](./LICENSE) © 2026
