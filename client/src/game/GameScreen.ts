@@ -4,12 +4,14 @@ import {
   isLegalCueBallPlacement,
   isBallInHandPlacementRestricted,
   type MatchState,
+  type BallState,
 } from '@pool/shared';
 import { TableRenderer } from './TableRenderer';
 import { PowerKeyController } from './PowerKeyController';
 import type { GameSession } from './GameSession';
 import type { SoundManager } from '../audio/SoundManager';
 import type { GameSettings } from '../utils/settings';
+import { planAIShot, planAIBallInHandPlacement } from '../ai/AIOpponent';
 
 export interface GameScreenCallbacks {
   onExitToMenu: () => void;
@@ -49,6 +51,10 @@ export class GameScreen {
   // at the exact pre-shot cue position/direction, never re-anchored to the
   // (possibly already-moving) cue ball afterward.
   private strikeAnim: { startTime: number; fromPos: Vec2; direction: Vec2; fromPullback: number } | null = null;
+
+  // AI Gameplay Assistance: smart shot suggestion
+  private aiHintMessage: string | null = null;
+  private aiHintTimeout: ReturnType<typeof setTimeout> | null = null;
 
   private hudEl!: HTMLElement;
   private overlayEl!: HTMLElement;
@@ -195,6 +201,10 @@ export class GameScreen {
       this.togglePause();
       return;
     }
+    if (e.key === 'h' || e.key === 'H') {
+      this.requestAISuggestion();
+      return;
+    }
     if (this.powerKeys.handleKeyDown(e.code)) {
       e.preventDefault();
     }
@@ -211,6 +221,61 @@ export class GameScreen {
   private onVisibilityChange = () => {
     if (document.hidden) this.powerKeys.clear();
   };
+
+  private requestAISuggestion(): void {
+    if (this.paused || !this.session.isMyTurn() || this.session.isShotInProgress()) return;
+    const state = this.session.getState();
+    if (state.phase === 'game_over') return;
+
+    const me = state.players.find((p) => p.id === this.session.myPlayerId);
+    const myGroup = me?.group ?? null;
+
+    if (state.ballInHand && this.ballInHandStage === 'placing') {
+      const bestPos = planAIBallInHandPlacement(
+        state.balls,
+        myGroup,
+        'insane',
+        this.isPlacementRestricted(state)
+      );
+      this.placementPreviewPos = Vec2.clone(bestPos);
+      this.placementValid = true;
+      this.committedCueBallPlacement = Vec2.clone(bestPos);
+      this.ballInHandStage = 'aiming';
+
+      const hypotheticalCue: BallState = {
+        id: 0,
+        position: bestPos,
+        velocity: Vec2.zero(),
+        pocketed: false,
+        onTable: true,
+      };
+      const previewBalls = state.balls.map((b) => (b.id === 0 ? hypotheticalCue : b));
+      const shot = planAIShot(previewBalls, myGroup, 'insane');
+      this.aimDirection = Vec2.clone(shot.direction);
+      this.power = Math.round(shot.power);
+      this.aiHintMessage = shot.targetBallId !== null
+        ? `AI Suggestion: Placement set & targeting Ball #${shot.targetBallId} (${this.power}% power)`
+        : `AI Suggestion: Optimal placement chosen (${this.power}% power)`;
+    } else {
+      const cuePos = this.getEffectiveCuePosition(state);
+      if (!cuePos) return;
+      const shot = planAIShot(state.balls, myGroup, 'insane');
+      this.aimDirection = Vec2.clone(shot.direction);
+      this.power = Math.round(shot.power);
+      this.aiHintMessage = shot.targetBallId !== null
+        ? `AI Suggestion: Target Ball #${shot.targetBallId} (${this.power}% power)`
+        : `AI Suggestion: Safety tap (${this.power}% power)`;
+    }
+
+    if (this.aiHintTimeout) clearTimeout(this.aiHintTimeout);
+    this.aiHintTimeout = setTimeout(() => {
+      this.aiHintMessage = null;
+      if (!this.destroyed) this.updateHUD();
+    }, 4500);
+
+    this.sound.click();
+    this.updateHUD();
+  }
 
   private shoot(): void {
     if (this.paused || !this.session.isMyTurn() || this.session.isShotInProgress()) return;
@@ -403,11 +468,14 @@ export class GameScreen {
           <span class="power-value">${Math.round(this.power)}%</span>
         </div>
         <div class="hud-buttons">
+          ${myTurn && !gameOver && !this.session.isShotInProgress() ? `<button class="btn btn-ghost btn-small" id="ai-hint-btn" title="AI Shot Suggestion (Press H)">💡 AI Hint</button>` : ''}
           <button class="btn btn-ghost btn-small" id="pause-btn" aria-label="Pause" ${gameOver ? 'disabled' : ''}>⏸</button>
         </div>
       </div>
       ${placementBanner}
+      ${this.aiHintMessage ? `<div class="hud-banner hud-banner--ai-hint">${escapeHtml(this.aiHintMessage)}</div>` : ''}
     `;
+    this.hudEl.querySelector('#ai-hint-btn')?.addEventListener('click', () => this.requestAISuggestion());
     this.hudEl.querySelector('#pause-btn')?.addEventListener('click', () => this.togglePause());
     this.hudEl.querySelector('#reposition-btn')?.addEventListener('click', this.enterRepositionMode);
   }
@@ -480,6 +548,7 @@ export class GameScreen {
     window.removeEventListener('blur', this.onWindowBlur);
     document.removeEventListener('visibilitychange', this.onVisibilityChange);
     this.powerKeys.clear();
+    if (this.aiHintTimeout) clearTimeout(this.aiHintTimeout);
     this.strikeAnim = null;
     this.session.leave();
   }

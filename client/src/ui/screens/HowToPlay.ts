@@ -12,6 +12,7 @@ export function renderHowToPlay(root: HTMLElement, onBack: () => void): void {
             <span class="keycap">W</span><span class="control-desc">Increase shot power</span>
             <span class="keycap">S</span><span class="control-desc">Decrease shot power</span>
             <span class="keycap">Mouse Wheel</span><span class="control-desc">Adjust shot power</span>
+            <span class="keycap">H</span><span class="control-desc">AI shot suggestion &amp; guidance</span>
             <span class="keycap">ESC</span><span class="control-desc">Pause menu</span>
           </div>
 

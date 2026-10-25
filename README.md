@@ -1,8 +1,8 @@
-# Billiard Clash
+# Billiard Clash — AI-Powered 8-Ball Pool
 
-A Classic 8-Ball Pool
+A modern 8-ball pool experience combining realistic physics, intelligent AI opponents, and competitive multiplayer gameplay.
 
-A full-stack, TypeScript implementation of classic 8-ball pool. Play against a friend online in real time, or challenge a computer opponent across four difficulty levels — all rendered on an HTML5 Canvas with a from-scratch 2D physics engine and WPA-based rules.
+Built with TypeScript, HTML5 Canvas, Node.js, Express, and Socket.IO, featuring physics-based ball movement, real-time multiplayer networking, and responsive game controls.
 
 > **Play now:** [https://billiard-clash.vercel.app/](https://billiard-clash.vercel.app/)
 
@@ -32,12 +32,15 @@ A full-stack, TypeScript implementation of classic 8-ball pool. Play against a f
 
 ## Features
 
-- **Player vs Player Online** — create a room, share a short room code, and play in real time over Socket.IO, with server-authoritative shot validation and reconnect support.
-- **Player vs Computer** — four AI difficulty levels (Easy / Medium / Hard / Insane) that reason about shot angles, obstruction, distance, and power rather than shooting randomly.
-- **From-scratch 2D physics** — fixed-timestep integration, elastic ball-to-ball collisions with positional correction (balls never visually overlap), rail reflection, rolling friction, and pocket detection.
-- **Authentic WPA 8-ball rules** — break rules, open table, group assignment, the full foul list, ball-in-hand, early/illegal/legal 8-ball resolution.
-- **Original dark billiard-hall visual design** — felt green, brass, and dark wood, with a numbered-ball canvas renderer, cue stick, aim line, and a brass-styled power meter.
-- **Zero licensed assets** — every sound effect is synthesized at runtime with the Web Audio API (see [Audio](#audio)).
+- **AI Opponents** — Play against computer-controlled opponents that evaluate shots and select moves.
+- **Intelligent Shot Analysis** — Estimate shot angles, target balls, and possible pocket outcomes via ghost-ball geometry and path obstruction checks.
+- **Smart Gameplay Assistance** — Offer aiming guidance and shot suggestions (press `H` or click `💡 AI Hint`) to help players improve.
+- **Adaptive Difficulty** — Four AI skill levels (Easy / Medium / Hard / Insane) scaling aiming precision, power variance, candidate evaluation depth, and position awareness.
+- **Player vs Player Online** — Create a room, share a short room code, and play in real time over Socket.IO, with server-authoritative shot validation and reconnect support.
+- **From-scratch 2D physics** — Fixed-timestep integration, elastic ball-to-ball collisions with positional correction (balls never visually overlap), rail reflection, rolling friction, and pocket detection.
+- **Authentic WPA 8-ball rules** — Break rules, open table, group assignment, the full foul list, ball-in-hand, early/illegal/legal 8-ball resolution.
+- **Original dark billiard-hall visual design** — Felt green, brass, and dark wood, with a numbered-ball canvas renderer, cue stick, aim line, and a brass-styled power meter.
+- **Zero licensed assets** — Every sound effect is synthesized at runtime with the Web Audio API (see [Audio](#audio)).
 - **Settings persisted locally** (volume, aim-assist line, fullscreen, graphics quality).
 
 ## Screenshots
@@ -62,6 +65,7 @@ Keyboard
 
 W   : Increase shot power
 S   : Decrease shot power
+H   : AI shot suggestion / smart assistance
 ESC : Pause / Return to menu
 
 Mouse
@@ -262,8 +266,18 @@ All sound effects (cue strike, ball collisions, rail bounces, pocketing, fouls, 
 
 ## Credits
 
-Built with TypeScript, HTML5 Canvas, Node.js, Express, and Socket.IO. Rules based on the WPA 8-Ball ruleset.
+**Billiard Clash — AI-Powered 8-Ball Pool**
+
+Designed and Developed by **ADITYA AVHAD**
+
+A modern 8-ball pool experience combining realistic physics, intelligent AI opponents, and competitive multiplayer gameplay.
+
+- **Developer:** ADITYA AVHAD
+- **Tech Stack:** TypeScript · HTML5 Canvas · Node.js · Express · Socket.IO
+- **Ruleset:** WPA (World Pool-Billiard Association) 8-Ball ruleset
+- **Tagline:** Aim. Break. Outsmart. Win.
+- **Copyright:** © 2026 ADITYA AVHAD
 
 ## License
 
-[MIT](./LICENSE) © 2026 Lujain-ALghamdi
+[MIT](./LICENSE) © 2026 ADITYA AVHAD

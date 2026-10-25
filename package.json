@@ -2,7 +2,8 @@
   "name": "billiard-clash",
   "private": true,
   "version": "0.1.0",
-  "description": "Classic online 8-ball pool game built with TypeScript. Play against another player online or challenge the computer.",
+  "description": "Billiard Clash — AI-Powered 8-Ball Pool. A modern 8-ball pool experience combining realistic physics, intelligent AI opponents, and competitive multiplayer gameplay.",
+  "author": "ADITYA AVHAD",
   "workspaces": [
     "shared",
     "server",

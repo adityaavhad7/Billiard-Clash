@@ -18,9 +18,11 @@ export class SoundManager {
     this.settings = settings;
   }
 
-  private getContext(): AudioContext {
+  private getContext(): AudioContext | null {
     if (!this.ctx) {
-      this.ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtx) return null;
+      this.ctx = new AudioCtx();
     }
     if (this.ctx.state === 'suspended') void this.ctx.resume();
     return this.ctx;
@@ -33,6 +35,7 @@ export class SoundManager {
 
   private playTone(freq: number, duration: number, type: OscillatorType, peakGain: number): void {
     const ctx = this.getContext();
+    if (!ctx) return;
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = type;
@@ -47,6 +50,7 @@ export class SoundManager {
 
   private playNoiseBurst(duration: number, peakGain: number, lowpassHz: number): void {
     const ctx = this.getContext();
+    if (!ctx) return;
     const bufferSize = Math.floor(ctx.sampleRate * duration);
     const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
     const data = buffer.getChannelData(0);

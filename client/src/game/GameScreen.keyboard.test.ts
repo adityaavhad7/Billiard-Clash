@@ -125,4 +125,21 @@ describe('GameScreen — layout-independent shot power keys (end-to-end)', () =>
     window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Escape', key: 'Escape' }));
     expect(root.querySelector('.modal h2')?.textContent).toContain('PAUSED');
   });
+
+  it('H key triggers smart AI shot suggestion and displays hint banner', () => {
+    expect(root.querySelector('.hud-banner--ai-hint')).toBeNull();
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'h' }));
+    const hintBanner = root.querySelector('.hud-banner--ai-hint');
+    expect(hintBanner).not.toBeNull();
+    expect(hintBanner?.textContent).toContain('AI Suggestion:');
+  });
+
+  it('clicking the AI Hint button in the HUD triggers AI shot suggestion', () => {
+    const hintBtn = root.querySelector<HTMLButtonElement>('#ai-hint-btn');
+    expect(hintBtn).not.toBeNull();
+    hintBtn?.click();
+    const hintBanner = root.querySelector('.hud-banner--ai-hint');
+    expect(hintBanner).not.toBeNull();
+    expect(hintBanner?.textContent).toContain('AI Suggestion:');
+  });
 });
